@@ -1,23 +1,25 @@
 package lab2
 
 import (
-	"fmt"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestEvalPrefix(t *testing.T) {
-	res, err := EvalPrefix("+ 5 * - 4 2 3")
-	if assert.Nil(t, err) {
-		assert.Equal(t, "4 2 - 3 * 5 +", res)
+	tests := []struct {
+		expression string
+		expected   int
+		shouldFail bool
+	}{
+		{"* 3 4", 15, false},
 	}
-}
 
-func ExampleEvalPrefix() {
-	res, _ := EvalPrefix("+ 2 2")
-	fmt.Println(res)
-
-	// Output:
-	// 2 2 +
+	for _, test := range tests {
+		result, err := EvalPrefix(test.expression)
+		if (err != nil) != test.shouldFail {
+			t.Errorf("EvalPrefix(%q) несподівана помилка: %v", test.expression, err)
+		} else if result != test.expected && !test.shouldFail {
+			t.Errorf("EvalPrefix(%q) = %d, очікувалося %d", test.expression, result, test.expected)
+		}
+		println(result)
+	}
 }
