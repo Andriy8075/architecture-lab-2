@@ -16,11 +16,22 @@ func EvalPrefix(expression string) (int, error) {
 	for i := len(tokens) - 1; i >= 0; i-- {
 		token := tokens[i]
 		if isOperator(token) {
+			// Перевіряємо, чи є в стеку достатньо операндів для операції
 			if len(stack) < 2 {
 				return 0, errors.New("некоректний вираз")
 			}
-			op1, _ := strconv.Atoi(stack[len(stack)-1])
-			op2, _ := strconv.Atoi(stack[len(stack)-2])
+
+			// Пробуємо конвертувати значення в числа
+			op1, err := strconv.Atoi(stack[len(stack)-1])
+			if err != nil {
+				return 0, errors.New("неправильний операнд: " + stack[len(stack)-1])
+			}
+
+			op2, err := strconv.Atoi(stack[len(stack)-2])
+			if err != nil {
+				return 0, errors.New("неправильний операнд: " + stack[len(stack)-2])
+			}
+
 			stack = stack[:len(stack)-2]
 
 			result, err := applyOperator(token, op1, op2)
@@ -38,6 +49,7 @@ func EvalPrefix(expression string) (int, error) {
 		return 0, errors.New("некоректний вираз")
 	}
 
+	// Повертаємо результат
 	return strconv.Atoi(stack[0])
 }
 
