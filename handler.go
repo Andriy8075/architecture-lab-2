@@ -1,12 +1,35 @@
 package lab2
 
-// ComputeHandler should be constructed with input io.Reader and output io.Writer.
-// Its Compute() method should read the expression from input and write the computed result to the output.
+import (
+	"fmt"
+	"io"
+	"strings"
+)
+
 type ComputeHandler struct {
-	// TODO: Add necessary fields.
+	Input  io.Reader
+	Output io.Writer
 }
 
-func (ch *ComputeHandler) Compute() error {
-	// TODO: Implement.
-	return nil
+func (h *ComputeHandler) Compute() error {
+	// Читаємо вхідні дані
+	data, err := io.ReadAll(h.Input)
+	if err != nil {
+		return fmt.Errorf("помилка читання: %w", err)
+	}
+
+	expression := strings.TrimSpace(string(data))
+	if expression == "" {
+		return fmt.Errorf("порожній вираз")
+	}
+
+	// Викликаємо EvalPrefix (з implementation.go)
+	result, err := EvalPrefix(expression)
+	if err != nil {
+		return fmt.Errorf("помилка обчислення: %w", err)
+	}
+
+	// Записуємо результат
+	_, err = fmt.Fprintln(h.Output, result)
+	return err
 }

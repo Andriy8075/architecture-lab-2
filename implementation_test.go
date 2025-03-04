@@ -10,7 +10,7 @@ func TestEvalPrefix(t *testing.T) {
 		expected   int
 		shouldFail bool
 	}{
-		{"* 3 4", 15, false}, // Некоректні символи
+		{"* 1 bebra", 0, true}, // Некоректні символи
 	}
 
 	for _, test := range tests {
